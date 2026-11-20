@@ -13,7 +13,11 @@ async function loadData() {
         if (!allData.length) {
             const response = await fetch(DATA_URL);
             const json = await response.json();
-            allData = json.result || [];
+            allData = (json.result || []).map(item => ({
+                ...item,
+                // Nombre completo por EAN; si no está en el listado se deja el de la base
+                NOMBRE_COMPLETO: NOMBRES_COMPLETOS[String(item.EAN).trim()] || item['NOMBRE PROD'],
+            }));
             initializeFuse();
 
             const searchInput = document.getElementById('searchInput');
@@ -31,7 +35,7 @@ async function loadData() {
 
 function initializeFuse() {
     const options = {
-        keys: ['EAN', 'NOMBRE PROD'],
+        keys: ['EAN', 'NOMBRE_COMPLETO', 'NOMBRE PROD'],
         threshold: 0.3,
     };
     fuse = new Fuse(allData, options);
@@ -66,7 +70,7 @@ function renderResults(results) {
 
     if (results.length > 0) {
         results.forEach(result => {
-            const nombre = result['NOMBRE PROD'] || 'Sin nombre';
+            const nombre = result.NOMBRE_COMPLETO || 'Sin nombre';
             // "NA" significa que el producto no pertenece a ningún proyecto
             const proyecto = result.PROJECT && result.PROJECT !== 'NA' ? result.PROJECT : '';
 
