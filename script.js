@@ -59,7 +59,7 @@ function performSearch(query) {
     renderResults(results);
 }
 
-// Formatea VALOR_UNIDAD con separador de miles
+// Formatea el precio con separador de miles
 function formatValor(valor) {
     const num = Number(valor);
     return isNaN(num) ? 'N/A' : num.toLocaleString('es-CO');
@@ -87,7 +87,7 @@ function renderResults(results) {
                         <li><strong>EAN:</strong> ${result.EAN}
                             <i class="material-icons copy-icon" role="button" tabindex="0" aria-label="Copiar EAN" onclick="copyToClipboard('${result.EAN}')">content_copy</i>
                         </li>
-                        <li><strong>Valor unidad:</strong> ${formatValor(result.VALOR_UNIDAD)}</li>
+                        <li><strong>Precio sugerido:</strong> ${formatValor(result.PRECIO_SUGERIDO ?? result.VALOR_UNIDAD)}</li>
                     </ul>
                 </div>
             `;
